@@ -12,8 +12,8 @@ public class Conexao {
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
         dataSource.setUrl("jdbc:mysql://localhost:3306/InnovaxDB"); // Aqui fica a URL do nosso banco de dados
-        dataSource.setUsername(""); // Aqui fica o usuário do Banco de Dados
-        dataSource.setPassword(""); // Aqui fica a senha do usuário
+        dataSource.setUsername("root"); // Aqui fica o usuário do Banco de Dados
+        dataSource.setPassword("Joao2506@"); // Aqui fica a senha do usuário
 
         // Inicializando o JdbcTemplate com o DataSource configurado
         this.conexaoDoBanco = new JdbcTemplate(dataSource);

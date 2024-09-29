@@ -1,5 +1,7 @@
 package school.sptech;
 
+import org.springframework.jdbc.core.JdbcTemplate;
+
 public class Empresa {
 
     private Integer id;
@@ -9,6 +11,11 @@ public class Empresa {
     private String senha;
 
 
+    // Cria uma conexão com o banco de dados e obtém um objeto `JdbcTemplate` para interagir com ele.
+    Conexao conexao = new Conexao();
+    JdbcTemplate con = conexao.getConexaoDoBanco();
+
+    // Criando construtor vazio
     public Empresa(){}
 
     // Criando construtor para inicializar os atributos acima
@@ -60,6 +67,7 @@ public class Empresa {
         this.senha = senha;
     }
 
+    //
     @Override
     public String toString() {
         return "Empresa{" +
@@ -69,5 +77,21 @@ public class Empresa {
                 ", cnpj='" + cnpj + '\'' +
                 ", senha='" + senha + '\'' +
                 '}';
+    }
+
+
+    // Criando metódo para criar a tabela no Banco
+    public String criarTabelaEmpresa(){
+        String sql = "CREATE TABLE IF NOT EXISTS empresa (\n" +
+                "id INT NOT NULL AUTO_INCREMENT,\n" +
+                "nome VARCHAR(50) NOT NULL,\n" +
+                "email VARCHAR(45) NOT NULL,\n" +
+                "cnpj VARCHAR(14) DEFAULT NULL,\n" +
+                "senha VARCHAR(45) NOT NULL,\n" +
+                "PRIMARY KEY (id),\n" +
+                "UNIQUE KEY email (email),\n" +
+                "UNIQUE KEY cnpj (cnpj)\n" +
+                ");";
+        return sql;
     }
 }
