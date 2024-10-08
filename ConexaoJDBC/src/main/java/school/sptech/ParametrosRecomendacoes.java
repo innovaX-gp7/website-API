@@ -8,7 +8,7 @@ import java.time.LocalTime;
 public class ParametrosRecomendacoes {
 
     // Criando atributos dos Parametros(aqui deve ser o mesmo nome que as colunas do Banco)
-    private Integer id;
+    private Integer idParametros;
     private BigDecimal limiteArea;
     private LocalTime horarioNotificoes;
     private Integer fk_empresa_recom;
@@ -21,10 +21,8 @@ public class ParametrosRecomendacoes {
     public ParametrosRecomendacoes(){}
 
     // Criando construtor com os parâmetros
-
-
-    public ParametrosRecomendacoes(Integer id, BigDecimal limiteArea, LocalTime horarioNotificoes, Integer fk_empresa_recom, Conexao conexao, JdbcTemplate con) {
-        this.id = id;
+    public ParametrosRecomendacoes(Integer idParametros, BigDecimal limiteArea, LocalTime horarioNotificoes, Integer fk_empresa_recom, Conexao conexao, JdbcTemplate con) {
+        this.idParametros = idParametros;
         this.limiteArea = limiteArea;
         this.horarioNotificoes = horarioNotificoes;
         this.fk_empresa_recom = fk_empresa_recom;
@@ -32,12 +30,12 @@ public class ParametrosRecomendacoes {
         this.con = con;
     }
 
-    public Integer getId() {
-        return id;
+    public Integer getIdParametros() {
+        return idParametros;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setIdParametros(Integer idParametros) {
+        this.idParametros = idParametros;
     }
 
     public BigDecimal getLimiteArea() {
@@ -80,27 +78,13 @@ public class ParametrosRecomendacoes {
         this.con = con;
     }
 
-    @Override
-    public String toString() {
-        return "ParametrosRecomendacoes{" +
-                "id=" + id +
-                ", limiteArea=" + limiteArea +
-                ", horarioNotificoes=" + horarioNotificoes +
-                ", fk_empresa_recom=" + fk_empresa_recom +
-                ", conexao=" + conexao +
-                ", con=" + con +
-                '}';
-    }
-
-
-
     public String criarTabelaParametrosRecomendacoes(){
-        String sql = "Create TABLE parametrosRecomendacoes (\n" +
-                "id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,\n" +
+        String sql = "CREATE TABLE IF NOT EXISTS parametrosRecomendacoes (\n" +
+                "idParametros INT PRIMARY KEY NOT NULL AUTO_INCREMENT,\n" +
                 "limiteArea DECIMAL (4,2),\n" +
                 "horarioNotificacoes TIME,\n" +
-                "fk_empresa_recom INT,\n" +
-                "CONSTRAINT fk_empresa_recom FOREIGN KEY (fk_empresa_recom) REFERENCES empresa(id)\n" +
+                "fkEmpresaRecomendacoes INT,\n" +
+                "CONSTRAINT fk_empresa_recom FOREIGN KEY (fkEmpresaRecomendacoes) REFERENCES empresa(idEmpresa)\n" +
                 ")auto_increment=10000;";
         return sql;
     }

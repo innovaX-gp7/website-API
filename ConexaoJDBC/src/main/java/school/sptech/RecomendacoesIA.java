@@ -4,7 +4,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 public class RecomendacoesIA {
 
-    private Integer id;
+    private Integer idRecomedacoes;
     private String unidadeFederativa;
     private String recomendacao;
     private Integer fk_dashboard;
@@ -14,11 +14,14 @@ public class RecomendacoesIA {
     JdbcTemplate con = conexao.getConexaoDoBanco();
 
     // Criando construtor vazio
-    public RecomendacoesIA(){};
+    public RecomendacoesIA() {
+    }
+
+    ;
 
     // Criando construtor com parâmetros
-    public RecomendacoesIA(Integer id, String unidadeFederativa, String recomendacao, Integer fk_dashboard, Conexao conexao, JdbcTemplate con) {
-        this.id = id;
+    public RecomendacoesIA(Integer idRecomedacoes, String unidadeFederativa, String recomendacao, Integer fk_dashboard, Conexao conexao, JdbcTemplate con) {
+        this.idRecomedacoes = idRecomedacoes;
         this.unidadeFederativa = unidadeFederativa;
         this.recomendacao = recomendacao;
         this.fk_dashboard = fk_dashboard;
@@ -26,12 +29,12 @@ public class RecomendacoesIA {
         this.con = con;
     }
 
-    public Integer getId() {
-        return id;
+    public Integer getIdRecomedacoes() {
+        return idRecomedacoes;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setIdRecomedacoes(Integer idRecomedacoes) {
+        this.idRecomedacoes = idRecomedacoes;
     }
 
     public String getUnidadeFederativa() {
@@ -74,23 +77,13 @@ public class RecomendacoesIA {
         this.con = con;
     }
 
-    @Override
-    public String toString() {
-        return "RecomendacoesIA{" +
-                "id=" + id +
-                ", unidadeFederativa='" + unidadeFederativa + '\'' +
-                ", recomendacao='" + recomendacao + '\'' +
-                ", fk_dashboard=" + fk_dashboard +
-                '}';
-    }
-
-    public String criarTabelaRecomendacoesIA(){
-        String sql = "CREATE TABLE recomendacoesIA (\n" +
-                "id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,\n" +
+    public String criarTabelaRecomendacoesIA() {
+        String sql = "CREATE TABLE IF NOT EXISTS recomendacoesIA (\n" +
+                "idRecomendacoes INT PRIMARY KEY NOT NULL AUTO_INCREMENT,\n" +
                 "unidadeFederativa VARCHAR(50) NOT NULL,\n" +
                 "recomendacao VARCHAR(100) NOT NULL,\n" +
-                "fk_dashboard INT,\n" +
-                "CONSTRAINT fk_dashboard FOREIGN KEY(fk_dashboard) REFERENCES dashboard(id)\n" +
+                "fkDashboard INT,\n" +
+                "CONSTRAINT fk_dashboard FOREIGN KEY(fkDashboard) REFERENCES dashboard(idDashboard)\n" +
                 ")AUTO_INCREMENT=1000;";
         return sql;
     }
