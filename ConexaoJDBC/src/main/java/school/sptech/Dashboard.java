@@ -3,8 +3,6 @@ package school.sptech;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.math.BigDecimal;
-import java.time.Month;
-import java.time.Year;
 
 public class Dashboard {
 
@@ -13,7 +11,7 @@ public class Dashboard {
     JdbcTemplate con = conexao.getConexaoDoBanco();
 
     // Criando atributos da Dashboard
-    private Integer id;
+    private Integer idDashboard;
     private String unidadeFederativa;
     private Byte mes;
     private Integer ano;
@@ -22,14 +20,15 @@ public class Dashboard {
     private Integer fk_empresa;
 
     // Criando construtor vazio
-    public Dashboard(){}
+    public Dashboard() {
+    }
 
 
     // Criando construtor com parâmetros
     public Dashboard(Conexao conexao, JdbcTemplate con, Integer id, String unidadeFederativa, Byte mes, Integer ano, BigDecimal areaDesmatada, BigDecimal temperaturaMensal, Integer fk_empresa) {
         this.conexao = conexao;
         this.con = con;
-        this.id = id;
+        this.idDashboard = id;
         this.unidadeFederativa = unidadeFederativa;
         this.mes = mes;
         this.ano = ano;
@@ -55,11 +54,11 @@ public class Dashboard {
     }
 
     public Integer getId() {
-        return id;
+        return idDashboard;
     }
 
     public void setId(Integer id) {
-        this.id = id;
+        this.idDashboard = id;
     }
 
     public String getUnidadeFederativa() {
@@ -112,17 +111,17 @@ public class Dashboard {
 
 
     // Criando metódo para criar a tabela no Banco
-    public String criarTabelaDashboard(){
-        String sql = "CREATE TABLE dashboard (\n" +
-                "    id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,\n" +
+    public String criarTabelaDashboard() {
+        String sql = "CREATE TABLE IF NOT EXISTS dashboard (\n" +
+                "    idDashboard INT PRIMARY KEY NOT NULL AUTO_INCREMENT,\n" +
                 "    unidadeFederativa VARCHAR(50) NOT NULL,\n" +
                 "    mes TINYINT,\n" +
                 "    ano YEAR,\n" +
                 "    areaDesmatada DECIMAL(4,2) NOT NULL,\n" +
                 "    temperaturaMensal DECIMAL(4,2) NOT NULL,\n" +
                 "    precipitacaoMensal DECIMAL(4,2) NOT NULL,\n" +
-                "    fk_empresa INT,\n" +
-                "    CONSTRAINT fk_empresa FOREIGN KEY (fk_empresa) REFERENCES empresa(id)\n" +
+                "    fkEmpresa INT,\n" +
+                "    CONSTRAINT fk_empresa FOREIGN KEY (fkEmpresa) REFERENCES empresa(idEmpresa)\n" +
                 ") AUTO_INCREMENT = 100;";
         return sql;
     }
