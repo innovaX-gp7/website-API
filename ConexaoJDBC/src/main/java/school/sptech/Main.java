@@ -2,6 +2,7 @@ package school.sptech;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import school.sptech.s3.BucketController;
 
 public class Main {
     public static void main(String[] args) {
@@ -34,5 +35,7 @@ public class Main {
             System.err.println("Erro ao criar as tabelas: " + e.getMessage());
         }
 
+
+        BucketController.listarBuckets();
     }
 }
