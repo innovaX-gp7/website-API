@@ -14,6 +14,7 @@ public class BucketController {
     public static void listarBuckets() {
 //        Instancia uma conexão com o S3
         S3Client s3Client = new S3Provider().getS3Client();
+        System.out.println("Iniciou conexão");
 
 //        Cria requisição para listar os objetos dentro do bucket
         ListObjectsRequest listObjectsRequest = ListObjectsRequest.builder()
@@ -22,8 +23,10 @@ public class BucketController {
 
 //        Lista objetos do bucket usando a requisição
         List<S3Object> objects = s3Client.listObjects(listObjectsRequest).contents();
+        System.out.println("Obteve Objetos:");
 
         for (S3Object object : objects) {
+            System.out.print(object);
 //            Cria requisição para baixar um objeto do bucket
             GetObjectRequest getObjectRequest = GetObjectRequest.builder()
                     .bucket("innovaxs3")
@@ -36,6 +39,7 @@ public class BucketController {
             try {
 //                Copia arquivo do s3 para um arquivo local com o nome da key do objeto
                 Files.copy(objectContent, new File(object.key()).toPath());
+                System.out.println(" => Copiou arquivo\n");
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
