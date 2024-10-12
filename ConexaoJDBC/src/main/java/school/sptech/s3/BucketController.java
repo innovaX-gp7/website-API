@@ -26,7 +26,7 @@ public class BucketController {
         for (S3Object object : objects) {
 //            Cria requisição para baixar um objeto do bucket
             GetObjectRequest getObjectRequest = GetObjectRequest.builder()
-                    .bucket("nome-do-bucket")
+                    .bucket("innovaxs3")
                     .key(object.key())
                     .build();
 
