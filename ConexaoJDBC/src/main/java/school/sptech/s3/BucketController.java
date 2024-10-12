@@ -15,17 +15,6 @@ public class BucketController {
 //        Instancia uma conexão com o S3
         S3Client s3Client = new S3Provider().getS3Client();
 
-//        Lista buckets
-        List<Bucket> buckets = s3Client.listBuckets().buckets();
-
-//        Cria bucket da Innovax caso não exista
-        if(buckets == null || buckets.isEmpty()){
-            CreateBucketRequest createBucketRequest = CreateBucketRequest.builder()
-                    .bucket("innovaxs3")
-                    .build();
-            s3Client.createBucket(createBucketRequest);
-        }
-
 //        Cria requisição para listar os objetos dentro do bucket
         ListObjectsRequest listObjectsRequest = ListObjectsRequest.builder()
                 .bucket("innovaxs3")
