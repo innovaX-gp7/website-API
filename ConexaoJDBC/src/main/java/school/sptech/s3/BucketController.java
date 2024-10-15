@@ -11,25 +11,45 @@ import java.nio.file.Files;
 import java.util.List;
 
 public class BucketController {
-    public static void listarBuckets() {
-//        Instancia uma conexão com o S3
-        S3Client s3Client = new S3Provider().getS3Client();
-        System.out.println("Iniciou conexão");
+//    Instancia uma conexão com o S3
+    S3Client s3Client = new S3Provider().getS3Client();
 
+    public List<Bucket> listarBuckets(){
+        List<Bucket> buckets = s3Client.listBuckets().buckets();
+        return buckets;
+    }
+
+    public void createBucket(String bucketName){
+        CreateBucketRequest createBucketRequest = CreateBucketRequest.builder()
+                .bucket(bucketName)
+                .build();
+        try{
+            s3Client.createBucket(createBucketRequest);
+            System.out.println("Bucket Criado!");
+        } catch (Exception e){
+            System.out.println("Ocorreu um erro ao criar um bucket");
+            e.printStackTrace();
+        }
+    }
+
+    public List<S3Object> listarObjetos(String bucketName) {
 //        Cria requisição para listar os objetos dentro do bucket
         ListObjectsRequest listObjectsRequest = ListObjectsRequest.builder()
-                .bucket("innovaxs3")
+                .bucket(bucketName)
                 .build();
 
 //        Lista objetos do bucket usando a requisição
         List<S3Object> objects = s3Client.listObjects(listObjectsRequest).contents();
         System.out.println("Obteve Objetos:");
+        return objects;
+    }
 
+    public void baixarObjetos(List<S3Object> objects, String bucketName){
         for (S3Object object : objects) {
-            System.out.print(object);
+            System.out.println(object);
 //            Cria requisição para baixar um objeto do bucket
             GetObjectRequest getObjectRequest = GetObjectRequest.builder()
-                    .bucket("innovaxs3")
+                    .bucket(bucketName)
                     .key(object.key())
                     .build();
 
@@ -37,11 +57,16 @@ public class BucketController {
             InputStream objectContent = s3Client.getObject(getObjectRequest, ResponseTransformer.toInputStream());
 
             try {
+                File arquivo = new File("data/"+object.key());
+                if(!arquivo.exists()){
 //                Copia arquivo do s3 para um arquivo local com o nome da key do objeto
-                Files.copy(objectContent, new File(object.key()).toPath());
-                System.out.println(" => Copiou arquivo\n");
+                Files.copy(objectContent, arquivo.toPath());
+                System.out.println("Copiou arquivo");
+                } else {
+                    System.out.println("Arquivo já baixado");
+                }
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
             }
         }
     }

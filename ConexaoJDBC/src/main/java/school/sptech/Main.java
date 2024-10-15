@@ -1,8 +1,20 @@
 package school.sptech;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import school.sptech.s3.BucketController;
+import software.amazon.awssdk.services.s3.model.Bucket;
+import software.amazon.awssdk.services.s3.model.S3Object;
+
+import java.io.File;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
@@ -35,7 +47,53 @@ public class Main {
             System.err.println("Erro ao criar as tabelas: " + e.getMessage());
         }
 
+//        View S3
+        BucketController bucketController = new BucketController();
+        List<Bucket> buckets = bucketController.listarBuckets();
+        if (buckets == null || buckets.isEmpty()) {
+            bucketController.createBucket("innovaxs3");
+            return;
+        }
+        for (Bucket bucket : buckets) {
+            List<S3Object> objects = bucketController.listarObjetos(bucket.name());
+            if (objects != null) {
+                bucketController.baixarObjetos(objects, bucket.name());
+            }
+        }
 
-        BucketController.listarBuckets();
+//        Tratamento de dados
+//        Está inacabado daqui para baixo
+        File diretorio = new File("data");
+        for (File arquivo : diretorio.listFiles()) {
+            Boolean arquivoTemperatura = false;
+            try {
+                InputStream streamArquivo = Files.newInputStream(arquivo.toPath());
+                Workbook workbook = new XSSFWorkbook(streamArquivo);
+                Sheet sheet = workbook.getSheetAt(0);
+                if(sheet.getRow(0).getCell(0).getStringCellValue().equalsIgnoreCase("Nome")){
+                    arquivoTemperatura = true;
+                    System.out.println("Arquivo é de temperatura");
+                }
+                for (Row row : sheet) {
+                    for (Cell cell : row) {
+                        if(arquivoTemperatura && row.getRowNum() == 0 && cell.getColumnIndex() == 1){
+                            System.out.println(cell.getStringCellValue());
+                        }
+                        if(arquivoTemperatura && row.getRowNum() > 11){
+                            System.out.print(cell.getStringCellValue() + ", ");
+                        } else {
+
+                        }
+                    }
+//                    System.out.println();
+                }
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+
     }
 }
