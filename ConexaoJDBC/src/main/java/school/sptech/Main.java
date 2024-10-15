@@ -14,10 +14,22 @@ import software.amazon.awssdk.services.s3.model.S3Object;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
+        //        INFORMAÇÕES PRA TER NO LOG:
+        //        DESCRIÇÃO, DATA_HORA, (fkempresa=null(dados-geral)), (fkempresa(especifica(dados-nao-geral)))
+        var formatador = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+        var horaDataAtual = LocalDateTime.now();
+        var horaDataAtualFormatada = formatador.format(horaDataAtual);
+        System.out.println(horaDataAtualFormatada);
+
+
+
         // Inicializando a conexão com o banco
         Conexao conexao = new Conexao();
         JdbcTemplate con = conexao.getConexaoDoBanco();
@@ -47,19 +59,64 @@ public class Main {
             System.err.println("Erro ao criar as tabelas: " + e.getMessage());
         }
 
+
+        String sqlText = ("insert into logsJAR(descricao, dataHora) values ('%s','%s')");
+        //criou bucket, baixar arquivos bucket, dados inseridos
+
 //        View S3
-        BucketController bucketController = new BucketController();
-        List<Bucket> buckets = bucketController.listarBuckets();
+        BucketController bucketController = new BucketController(); //CRIAR CONTROLE PRO S3
+        List<Bucket> buckets = bucketController.listarBuckets(); //Listar buckets (um, nesse caso)
+
+        try {
+            System.out.println(String.format(sqlText, "Buckets listados", horaDataAtualFormatada));
+            con.execute(String.format(sqlText, "Buckets listados", horaDataAtualFormatada));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+
+
+
         if (buckets == null || buckets.isEmpty()) {
             bucketController.createBucket("innovaxs3");
+
+            try {
+                System.out.println(String.format(sqlText, "Bucket criado", horaDataAtualFormatada));
+                con.execute(String.format(sqlText, "Bucket criado", horaDataAtualFormatada));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             return;
         }
         for (Bucket bucket : buckets) {
-            List<S3Object> objects = bucketController.listarObjetos(bucket.name());
+            List<S3Object> objects = bucketController.listarObjetos(bucket.name()); //LISTAR ARQUIVOS DO BUCKET
+
+            try {
+                System.out.println(String.format(sqlText, "Arquivos do bucket listados", horaDataAtualFormatada));
+                con.execute(String.format(sqlText, "Arquivos do bucket listados", horaDataAtualFormatada));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             if (objects != null) {
                 bucketController.baixarObjetos(objects, bucket.name());
+                try {
+                    System.out.println(String.format(sqlText, "Arquivos do bucket baixados", horaDataAtualFormatada));
+                    con.execute(String.format(sqlText, "Arquivos do bucket baixados", horaDataAtualFormatada));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
+
+
+
+
+
+
+
 
 //        Tratamento de dados
 //        Está inacabado daqui para baixo
