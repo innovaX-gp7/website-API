@@ -62,9 +62,9 @@ public class Main {
         }
 
 //        Tratamento de dados
+//        Está inacabado daqui para baixo
         File diretorio = new File("data");
         for (File arquivo : diretorio.listFiles()) {
-            System.out.println("Passou");
             Boolean arquivoTemperatura = false;
             try {
                 InputStream streamArquivo = Files.newInputStream(arquivo.toPath());
@@ -72,7 +72,7 @@ public class Main {
                 Sheet sheet = workbook.getSheetAt(0);
                 if(sheet.getRow(0).getCell(0).getStringCellValue().equalsIgnoreCase("Nome")){
                     arquivoTemperatura = true;
-                    System.out.println("Aquivo é de temperatura");
+                    System.out.println("Arquivo é de temperatura");
                 }
                 for (Row row : sheet) {
                     for (Cell cell : row) {
@@ -85,7 +85,7 @@ public class Main {
 
                         }
                     }
-                    System.out.println();
+//                    System.out.println();
                 }
 
 
